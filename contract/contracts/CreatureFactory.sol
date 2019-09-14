@@ -35,11 +35,11 @@ contract CreatureFactory is Factory, Ownable {
   }
 
   function name() external view returns (string memory) {
-    return "IPFS NFT";
+    return "ND IPFS DEMO";
   }
 
   function symbol() external view returns (string memory) {
-    return "IPN";
+    return "NID";
   }
 
   function supportsFactoryInterface() public view returns (bool) {
