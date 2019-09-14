@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="icon" type="image/png" href="./favicon.png">
+    <title>IPFS NFT DEMO!</title>
+  </head>
+
+  <body style="background-color: #000000; color:#FFFFFF;">
+    <div style="margin-top: 50px;" class="container">
+      <div class="row">
+        <div class="col-3">
+        </div>
+
+        <div id="upload-block" class="col-6">
+          <img src="./BG_Logo.png" width="100%"/>
+            <h1 style="text-align: center;" class="h3 mb-3 font-weight-normal">Create Neon District Item</h1>
+            <h1 style="text-align: center;" class="h3 mb-3 font-weight-normal">IPFS Metadata Demo</h1>
+            <p></p>
+
+            <div style="justify-content: center; text-align: center; margin-bottom: 5px;" class="row">
+              <div class="col-8" style="width: 100%; text-align: center; justify-content: center">
+                <input name="itemName" id="itemName" type="text" style="width: 100%;" placeholder="Item Name"/>
+              </div>
+            </div>
+
+            <div style="justify-content: center; text-align: center; margin-bottom: 5px;" class="row">
+              <div class="col-8" style="width: 100%; text-align: center; justify-content: center">
+                <textarea name="description" id="description" type="text" style="width: 100%;" rows="3" placeholder="Description"/></textarea>
+              </div>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 5px;" class="row">
+              <div class="col">
+                <input class="attribute" type="text" placeholder="Attribute"/>
+                <input class="attrValue" type="text" placeholder="Value"/>
+              </div>
+            </div>
+
+            <div id="add-attr">
+            </div>
+
+            <div style="margin-left: 72px; margin-bottom: 5px;" class="row">
+              <div class="col">
+                <a style="cursor: pointer; color: lime;" onclick="addAttribute()">+ Add Addtional Attribute</a>
+              </div>
+            </div> 
+
+            <div style="text-align: center; margin-bottom: 5px; justify-content: center;"" class="row">
+              <div class="col-8" style="text-align: center; justify-content: center;"> 
+                <div style="text-align: center; justify-content: center;" class="row">
+                    <label style="width: 100%;" class="btn btn-primary" >Upload Item Image
+                      <input class="btn btn-primary" name="file" id="userFile" type="file" hidden/>
+                    </label>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-lg btn-success btn-block" onclick="startUpload()">Mint Game Item</button>
+            <p id="error"><p>
+        </div>
+        
+        <div id="waiting-block" style="display: none;" class="col-6">        
+          <h1>Please Wait</h1>
+        </div>
+
+        <div style="display: none;" id="success-block" class="col-6">
+          <a href="" id="ipfs-meta-link" target="_blank">IPFS Metadata</a>
+          <a href="" id="ipfs-file-link" target="_blank">IPFS File</a>
+          <a href="" id="ether-link" target="_blank">Etherscan TX</a>
+          <a href="" id="opensea-link" target="_blank">OpenSea</a>
+        </div>
+
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="./web3.js"></script>
+    <script src="./contractVars.js"></script>
+    <script>
+      async function startUpload() {
+        // Waiting screen
+        document.getElementById("upload-block").style.display = "none";
+        document.getElementById("waiting-block").style.display = 'block';
+
+        /* Not Required For This Demo
+        // Allow Web3 Connection
+        let connection = allowWeb3();
+        if (!connection) {
+            document.getElementById("error").innerHTML = 'Web3 Required!';
+            return;
+        }
+        */
+
+        // Get item name
+        let itemName = document.getElementById("itemName").value;
+
+        // Get attribute / value
+        let itemAttributes = document.getElementsByClassName("attribute");
+        let itemValues = document.getElementsByClassName("attrValue"); 
+        var itemData = [];
+        var count = 0;
+        for await (i of itemAttributes) {
+            let Attr = {};
+            Attr["attribute"] = itemAttributes[count].value;
+
+            if(!isNaN(parseInt(itemValues[count].value))) {
+                var val = parseInt(itemValues[count].value);
+            } else {
+                var val = itemValues[count].value;
+            }
+            Attr["value"] = val;
+            itemData.push(JSON.stringify(Attr))
+            count++;
+        };
+
+
+        // Get description
+        var itemDescription = document.getElementById("description").value;
+
+        // Add item information to form data
+        var formData = new FormData();      
+        formData.append("itemName", itemName);
+        formData.append("attributes", JSON.stringify(itemData));
+        formData.append("itemDescription", itemDescription);
+
+        // Add image file  
+        let userFile = await document.getElementById("userFile").files[0];
+        formData.append("file", userFile, userFile.name)
+
+        // Send to the server
+        let request = await sendForm(formData);
+      }
+
+
+      
+      async function sendForm(formData) {
+        const url="http://127.0.0.1:5000";
+
+        var request = await fetch(url, {
+          method: "POST",
+          body: formData,
+        }).then(function(response) {
+          if(response.status !== 200) {
+              return {'error': 'Internal Error Occurred!'};
+              }
+          return response.json()
+        }, function(error) {
+          return {'error': 'Internal Error Occurred!'};
+        });
+
+        if (request.error) {
+          document.getElementById("waiting-block").style.display = "none";
+          document.getElementById("upload-block").style.display = 'block';
+          document.getElementById("error").innerHTML = 'Server Error Occurred';
+        } else {
+          document.getElementById("waitin-block").style.display = "none";
+          document.getElementById("success-block").style.display = 'block';
+          document.getElementById("ipfs-meta-link").href = request.meta;
+          document.getElementById("ipfs-file-link").href = request.file;
+          document.getElementById("ether-link").href = request.tx;
+          document.getElementById("opensea-link").href = request.openSea;
+        }
+        return;
+      }
+
+      function addAttribute() {
+        var attribute = document.createElement("input");
+        var value = document.createElement("input");
+        var row = document.createElement("div");
+        var col = document.createElement("div");
+
+        attribute.type = "text";
+        attribute.placeholder = "Attribute";
+        attribute.className = "attribute";
+        attribute.style.marginRight = "4px";
+
+        value.type = "text";
+        value.placeholder = "Value";
+        value.className = "attrValue"
+
+        col.className = "col";
+        row.className = "row";
+        row.style.textAlign = "center";
+        row.style.marginBottom = "5px";
+
+        row.appendChild(col);
+        col.appendChild(attribute);
+        col.appendChild(value);
+
+        var addAttr = document.getElementById("add-attr");
+        addAttr.appendChild(row);
+      }
+
+      async function allowWeb3() {
+        if (typeof window.ethereum !== 'undefined') {
+        var web3Check = await window.ethereum;
+          if (typeof web3Check !== 'undefined' && web3Check !== '') {
+            try {
+              var web3Enable = await web3Check.enable();
+            } catch (error) {
+              return false;
+            }
+            if (web3Enable[0].length === 42 || web3Enable[0].indexOf("0x") === 0) {
+              return web3Enable[0]
+            }
+          }
+        }
+        return false;
+      }
+    </script>    
+  </body>
+</html>
