@@ -7,7 +7,7 @@
 2. Node.js (11+) 
 
 ##
-### /Client
+### /client
 ##### Configure
 > index.html  
 > line: 81  
@@ -17,7 +17,7 @@ Set the local_server variable to the location of your server for this repo.
 
 ##
 
-### /Server
+### /server
 ##### Configure
 Copy tmp-env to .env: `cp tmp-env .env`  
 Configure .env  
