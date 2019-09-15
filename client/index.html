@@ -67,10 +67,15 @@
         </div>
 
         <div style="display: none;" id="success-block" class="col-6">
-          <a href="" id="ipfs-meta-link" target="_blank">IPFS Metadata</a>
-          <a href="" id="ipfs-file-link" target="_blank">IPFS File</a>
-          <a href="" id="ether-link" target="_blank">Etherscan TX</a>
-          <a href="" id="opensea-link" target="_blank">OpenSea</a>
+	  <div class="row">
+            <a href="" id="ipfs-meta-link" target="_blank">IPFS Metadata</a>
+	  </div><div class="row">
+            <a href="" id="ipfs-file-link" target="_blank">IPFS File</a>
+	  </div><div class="row">
+            <a href="" id="ether-link" target="_blank">Etherscan TX</a>
+	  </div><div class="row">
+            <a href="" id="opensea-link" target="_blank">OpenSea</a>
+	  </div>
         </div>
 
       </div>
@@ -78,7 +83,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script>
-      var local_server = "http://127.0.0.1:5000";
+      var local_server = "http://127.0.0.1:9000";
 
       async function startUpload() {
         // Waiting screen
@@ -147,7 +152,7 @@
           document.getElementById("upload-block").style.display = 'block';
           document.getElementById("error").innerHTML = 'Server Error Occurred';
         } else {
-          document.getElementById("waitin-block").style.display = "none";
+          document.getElementById("waiting-block").style.display = "none";
           document.getElementById("success-block").style.display = 'block';
           document.getElementById("ipfs-meta-link").href = request.meta;
           document.getElementById("ipfs-file-link").href = request.file;

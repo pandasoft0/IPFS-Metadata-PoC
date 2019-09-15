@@ -2,12 +2,12 @@
 
 ### Requirements
 1. [IPFS Node](https://docs.ipfs.io/guides/guides/install/)
-    - Pre-Built
-    - Source
+ 	- Pre-Built
+	- Source
 2. Node.js (11+) 
 
 ##
-### /client
+### /Client
 ##### Configure
 > index.html  
 > line: 81  
@@ -17,7 +17,7 @@ Set the local_server variable to the location of your server for this repo.
 
 ##
 
-### /server
+### /Server
 ##### Configure
 Copy tmp-env to .env: `cp tmp-env .env`  
 Configure .env  
@@ -36,7 +36,7 @@ IPFS_LOCAL_STORAGE='(LOCAL IPFS STORAGE LOCATION)'
   For now ONLY USE "https://ipfs.io/ipfs/" or local public gateway (ex: https://ipfs.cr0wngh0ul.org/ipns/)
 
 ##### Start
-    node server
+	node server
 ##
 
 ### /contract
@@ -44,10 +44,10 @@ This contract sample is taken from [OpenSea Creatures](https://github.com/Projec
 ##### Configure
 - > /contracts/CreatureFactory.sol  
 
-    - baseURI: set to IPNS gateway with IPNS CID (ex: "https://ipfs.cr0wngh0ul.org/ipns/QmVc5VEnPedqKJsEozRBAzSm7aWcKcoPNeXwQS1p1W7y3v/")
+	- baseURI: set to IPNS gateway with IPNS CID (ex: "https://ipfs.cr0wngh0ul.org/ipns/QmVc5VEnPedqKJsEozRBAzSm7aWcKcoPNeXwQS1p1W7y3v/")
 - > /contract/Creature.sol  
 
-    - BaseTokenURI: set to IPNS gateway with IPNS CID (ex: "https://ipfs.cr0wngh0ul.org/ipns/QmVc5VEnPedqKJsEozRBAzSm7aWcKcoPNeXwQS1p1W7y3v/") 
+	- BaseTokenURI: set to IPNS gateway with IPNS CID (ex: "https://ipfs.cr0wngh0ul.org/ipns/QmVc5VEnPedqKJsEozRBAzSm7aWcKcoPNeXwQS1p1W7y3v/") 
 
 - When there is better support for IPFS / IPNS these should omit the gateway and only include `/ipns/<IPNS CID>`
 ##### Deploy Contract
@@ -63,3 +63,10 @@ truffle deploy --network rinkeby
 1. Open index.html in your web browser.
 2. Fill out the form fields.
 3. Submit the form.
+
+##
+### TODO:
+##### /server/ipfsNft.js
+>execShellCommand()  
+	
+   * Catch error and stderr to quit execution and send error to client
